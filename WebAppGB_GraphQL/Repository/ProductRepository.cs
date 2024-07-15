@@ -87,7 +87,7 @@ namespace WebAppGB_GraphQL.Repository
 
             fileName = "products" + DateTime.Now.ToBinary().ToString() + ".csv";
 
-            System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles", fileName), content);
+            System.IO.File.WriteAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles", fileName), content);
 
             return "https://" + Request.Host.ToString() + "/static/" + fileName;
         }

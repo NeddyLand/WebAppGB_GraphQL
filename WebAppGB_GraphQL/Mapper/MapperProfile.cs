@@ -10,6 +10,7 @@ namespace WebAppGB_GraphQL.Mapper
         {
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<ProductGroup, ProductGroupDto>().ReverseMap();
+            CreateMap<Storage, StorageDto>().ReverseMap();
         }
     }
 }

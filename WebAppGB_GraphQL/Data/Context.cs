@@ -13,11 +13,7 @@ namespace WebAppGB_GraphQL.Data
         private readonly string _dbConnectionString;
 
         public Context() { }
-        public Context(string connection)
-        {
-            _dbConnectionString = connection;
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(_dbConnectionString).UseLazyLoadingProxies().LogTo(Console.WriteLine);
+        public Context(DbContextOptions<Context> dbContext) : base(dbContext) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductGroup>(entity =>
