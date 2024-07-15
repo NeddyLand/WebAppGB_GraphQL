@@ -1,3 +1,8 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using WebAppGB_GraphQL.Abstractions;
+using WebAppGB_GraphQL.Repository;
 
 namespace WebAppGB_GraphQL
 {
@@ -13,6 +18,15 @@ namespace WebAppGB_GraphQL
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(Mapper.MapperProfile));
+            builder.Services.AddMemoryCache(x => x.TrackStatistics = true);
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+            builder.Host.ConfigureContainer<ContainerBuilder>(cb =>
+            {
+                cb.RegisterType<ProductRepository>().As<IProductRepository>();
+                cb.RegisterType<ProductGroupRepository>().As<IProductGroupRepository>();
+                cb.Register(x => new Data.Context(builder.Configuration.GetConnectionString("db"))).InstancePerDependency();
+            });
 
             var app = builder.Build();
 
@@ -22,6 +36,16 @@ namespace WebAppGB_GraphQL
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            var staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles");
+            Directory.CreateDirectory(staticFilesPath);
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    staticFilesPath),
+                RequestPath = "/static"
+            });
 
             app.UseHttpsRedirection();
 
